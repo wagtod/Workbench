@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RotateBarrel : MonoBehaviour
 {
-    public Vector3 Destination { get; set; }
+    public Vector3 Destination { get; private set; }
 
     // Use this for initialization
     void Start()
@@ -15,36 +15,34 @@ public class RotateBarrel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //move this to a controller class
-        //if (Input.GetMouseButton(1))
-        //{
-        //    Destination = Input.mousePosition;
-        //}
-        //if (Input.GetMouseButton(1))
-        //{
-        //    Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
-        //    Vector3 dir = Input.mousePosition - pos;
-        //    float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) - 90;
-        //    Debug.Log($"Barrel angle = {angle}");
-        //    transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        //}
-
-
     }
+
+    private float _speed = 3.0f;
 
     private void FixedUpdate()
     {
-        if (Destination != null)
-        {
-            RotateToDestination();
-        }
     }
 
-    private void RotateToDestination()
+    public void SetDestination(Vector3 newDest)
     {
-        //start here tod: how to rotate towards and not instantly.
-        Vector3 direction = Destination - Camera.main.WorldToScreenPoint(transform.position);
-        float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) - 90;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        Destination = newDest;
+        StartCoroutine(RotateToDestination());
     }
+
+    private IEnumerator RotateToDestination()
+    {
+        Quaternion targetRotation = Quaternion.identity;
+        do
+        {
+            Vector3 direction = (Destination - Camera.main.WorldToScreenPoint(transform.position));
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            targetRotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _speed * Time.deltaTime);
+
+            //Debug.Log(Quaternion.Angle(transform.rotation, targetRotation));
+            yield return null;
+
+        } while (Quaternion.Angle(transform.rotation, targetRotation) > 0.01f);
+    }
+
 }

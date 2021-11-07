@@ -20,7 +20,7 @@ public class LevelController : MonoBehaviour
         {
             if (RotateBarrelTest != null)
             {
-                RotateBarrelTest.Destination = Input.mousePosition;
+                RotateBarrelTest.SetDestination(Input.mousePosition);
             }
         }
     }
