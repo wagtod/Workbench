@@ -25,6 +25,7 @@ public class RotateBarrel : MonoBehaviour
 
     public void SetDestination(Vector3 newDest)
     {
+        Debug.Log(newDest.ToString());
         Destination = newDest;
         StartCoroutine(RotateToDestination());
     }

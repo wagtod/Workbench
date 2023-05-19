@@ -8,6 +8,8 @@ public class GreenBugController : MonoBehaviour
     public GameObject GreenBug;
     [SerializeField]
     public RotateBarrel rotateBarrel;
+    [SerializeField]
+    public GameObject Topsoil;
 
     // Start is called before the first frame update
     void Start()
@@ -31,8 +33,10 @@ public class GreenBugController : MonoBehaviour
             GreenBug.GetComponent<Animator>().enabled = true;
         }
         //RotateBarrel to GreenBug
-        rotateBarrel.SetDestination(transform.position);
+        rotateBarrel.SetDestination(Camera.main.WorldToScreenPoint(GreenBug.transform.position));
     }
+
+
 
     //Move the GreenBug object in the direction of keyboard movement.
     void Move()
